@@ -6,7 +6,7 @@ from atypical.money import Money
 
 
 def test_money():
-    locale.setlocale(locale.LC_NUMERIC, "en_US")
+    locale.setlocale(locale.LC_NUMERIC, "en_US.UTF-8")
     m = Money(100, "USD")
     assert m == "$100.00"
     assert m.amount == 100
