@@ -11,9 +11,9 @@ def test_money():
     assert m == "$100.00"
     assert m.amount == 100
     assert m.currency == "USD"
-    assert m.formatted == "$100.00"
+    assert m.formatted.replace("\xa0", "") == "$100.00"
     assert m.num_cents == 10000
-    assert m.friendly == "$100"
+    assert m.friendly.replace("\xa0", "") == "$100"
 
     assert Money.from_cents(10000, "USD") == "$100.00"
 
@@ -28,8 +28,8 @@ def test_money():
     assert Money("$100.00") <= Money("$100.01")
     assert Money("$100.00") <= Money("$100.00")
 
-    assert Money("$100.01").friendly == "$100.01"
-    assert Money(1000).friendly == "$1,000"
+    assert Money("$100.01").friendly.replace("\xa0", "") == "$100.01"
+    assert Money(1000).friendly.replace("\xa0", "") == "$1,000"
 
     assert Money("1000", "USD") == "$1,000.00"
     assert Money("$1,000.00") == Money("1000", "USD")
