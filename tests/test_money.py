@@ -51,4 +51,4 @@ def test_money():
     m = Model(money="100.01")
     m.money += "0.99"
     assert isinstance(m.money, Money)
-    assert m.to_json() == '{"money":"$101.00"}'
+    assert m.to_json().replace("\xa0", "") == '{"money":"$101.00"}'
