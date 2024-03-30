@@ -2,7 +2,8 @@ from decimal import Decimal
 from typing import ForwardRef, Union
 
 from babel import Locale
-from babel.numbers import LC_NUMERIC, format_currency, get_decimal_symbol
+from babel.core import default_locale
+from babel.numbers import format_currency, get_decimal_symbol
 from money import Money as BaseMoney
 from sartorial import JSONSchemaFormatted, Serializable
 
@@ -13,12 +14,13 @@ Money = ForwardRef("Money")
 
 class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
     schema_format = "money"
+    DEFAULT_LOCALE = None
 
     def __new__(
         cls,
         amount: Union[Decimal, str, int, Money],
         currency: Union[CurrencyCode, str] = CurrencyCode.USD,
-        locale: Union[Locale, str] = LC_NUMERIC,
+        locale: Union[Locale, str] = None,
     ):
         return str.__new__(cls, amount)
 
@@ -26,7 +28,7 @@ class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
         self,
         amount: Union[Decimal, str, int, Money],
         currency: Union[CurrencyCode, str] = CurrencyCode.USD,
-        locale: Union[Locale, str] = LC_NUMERIC,
+        locale: Union[Locale, str] = None,
     ):
         if isinstance(amount, BaseMoney):
             super().__init__(amount.amount, getattr(amount, "currency", str(currency)))
@@ -37,6 +39,10 @@ class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
             super().__init__(value, str(currency))
         else:
             super().__init__(amount, str(currency))
+        if locale is None:
+            if self.__class__.DEFAULT_LOCALE is None:
+                self.__class__.DEFAULT_LOCALE = default_locale("LC_NUMERIC")
+            locale = self.__class__.DEFAULT_LOCALE
         self.locale = locale
         self.formatted = format_currency(self.amount, self.currency, locale=self.locale)
 
