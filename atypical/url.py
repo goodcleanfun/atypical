@@ -1,15 +1,19 @@
+import unicodedata
 from pathlib import Path
 from typing import ForwardRef, Union
-from urllib.parse import quote, unquote
+from urllib.parse import quote as quote_orig
+from urllib.parse import unquote as unquote_orig
 
+import furl
 from foundational.encoding import safe_decode
-from furl import furl
 from sartorial import JSONSchemaFormatted, Serializable
+
+__all__ = ["URL", "NormalizedURL"]
 
 URL = ForwardRef("URL")
 
 
-class URL(str, furl, JSONSchemaFormatted, Serializable):
+class URL(str, furl.furl, JSONSchemaFormatted, Serializable):
     schema_format = "url"
 
     DEFAULT_CHARSET = "utf-8"
@@ -26,7 +30,7 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
     }
 
     def __new__(cls, url: str = "", is_normalized=False, **kwargs):
-        f = furl(url, **kwargs)
+        f = furl.furl(url, **kwargs)
         return str.__new__(cls, f)
 
     def __init__(self, url: str = "", is_normalized=False, **kwargs):
@@ -116,6 +120,32 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         return host
 
     @classmethod
+    def unquote(cls, string, charset="utf-8"):
+        """URL decode a string and normalize unicode to NFC
+        Params:
+            string : string to be unquoted
+            charset : string : optional : output encoding
+        Returns:
+            string : an unquoted and normalized string
+        """
+        string = unquote_orig(string)
+        string = safe_decode(string, charset)
+        string = unicodedata.normalize("NFC", string).encode(charset)
+        return string
+
+    @classmethod
+    def quote(cls, string, safe="/"):
+        """URL encode a string, but do not encode the safe characters.
+        Params:
+            string : string to be quoted
+            safe : string of safe characters
+        Returns:
+            string : quoted string
+        """
+        string = quote_orig(string, safe)
+        return string
+
+    @classmethod
     def normalize_path(cls, path: Union[str, Path], scheme) -> str:
         """Normalize path part of the url. Quote only the necessary parts
         of the URL (e.g., spaces but not parens, etc.)
@@ -128,7 +158,7 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         # Only perform percent-encoding where it is essential.
         # Always use uppercase A-through-F characters when percent-encoding.
         # All portions of the URI must be utf-8 encoded NFC from Unicode strings
-        path = quote(unquote(str(path)), "~:/?#[]@!$&'()*+,;=")
+        path = cls.quote(cls.unquote(str(path)), "~:/?#[]@!$&'()*+,;=")
         # Prevent dot-segments appearing in non-relative URI paths.
         if scheme is None or scheme in ["", "http", "https", "ftp", "file"]:
             output, part = [], None
@@ -160,7 +190,7 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         Returns:
             string : normalized fragment data.
         """
-        return quote(unquote(str(fragment)), "~")
+        return cls.quote(cls.unquote(str(fragment)), "~")
 
     @classmethod
     def normalize_query(cls, query, sort_query_params=True):
@@ -171,11 +201,17 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         Returns:
             string : normalized query data.
         """
+        if not isinstance(query, furl.Query):
+            query = furl.Query(query)
         for k in cls.SOURCE_QUERY_PARAMS:
             query.params.pop(k, None)
+        params = [
+            (cls.quote(cls.unquote(k)), cls.quote(cls.unquote(v)))
+            for k, v in query.params.items()
+        ]
         if sort_query_params:
-            query.params = sorted(query.params.items())
-        return str(query)
+            params = sorted(params)
+        return "&".join(f"{k}={v}" for k, v in params)
 
     @classmethod
     def normalize(
