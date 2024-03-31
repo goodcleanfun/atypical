@@ -25,35 +25,23 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         "utm_term",
     }
 
-    def __new__(cls, url: str = "", *args, is_normalized=False, **kwargs):
-        f = furl(url, *args, **kwargs)
+    def __new__(cls, url: str = "", is_normalized=False, **kwargs):
+        f = furl(url, **kwargs)
         return str.__new__(cls, f)
 
-    def __init__(self, url: str = "", is_normalized=False, *args, **kwargs):
-        super().__init__(url, *args, **kwargs)
+    def __init__(self, url: str = "", is_normalized=False, **kwargs):
+        super().__init__(url, **kwargs)
         self.is_normalized = is_normalized
 
     def __eq__(self, other):
-        if isinstance(other, str) or (
-            isinstance(other, URL) and not other.is_normalized
-        ):
+        if self.is_normalized and not (isinstance(other, URL) and other.is_normalized):
             other = URL.normalize(other)
-        if not self.is_normalized:
-            self = URL.normalize(self)
+        elif not self.is_normalized and not isinstance(other, URL):
+            other = URL(other)
         return self.url == other.url
 
-    @classmethod
-    def serialize(cls, value):
-        if value is None:
-            return value
-
-        if isinstance(value, furl):
-            return str(value)
-
-        if isinstance(value, str):
-            return value
-        else:
-            raise ValueError(f"Must be either string or furl, type was {type(value)}")
+    def __hash__(self):
+        return hash(self.url)
 
     def __str__(self):
         return self.url
@@ -234,3 +222,11 @@ class URL(str, furl, JSONSchemaFormatted, Serializable):
         )
         url.is_normalized = True
         return url
+
+
+class NormalizedURL(URL):
+    schema_format = "normalized-url"
+
+    def __init__(self, url: str = "", **kwargs):
+        u = URL.normalize(url)
+        super().__init__(u.url, is_normalized=True, **kwargs)
