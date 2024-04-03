@@ -12,6 +12,14 @@ commit = true
 tag = true
 push = false
 
+[bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+]
+"atypical/__init__.py" = [
+    '^__version__ = "{version}"$',
+]
+
 [project]
 name = "atypical"
 dynamic = ["version"]

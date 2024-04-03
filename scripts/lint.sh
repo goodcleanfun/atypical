@@ -3,5 +3,5 @@
 set -e
 set -x
 
-ruff atypical tests --fix
+ruff check atypical tests --fix
 black atypical tests --check
