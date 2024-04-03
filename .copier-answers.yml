@@ -1,0 +1,8 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 6166af2
+_src_path: gh:goodcleanfun/pypi-template
+author: Al Barrentine
+description: Type handling and normalization for non-standard types like email, phone numbers, money, dates, etc. serializable and deserializable as JSON, JSON Schema, and Pydantic.
+license: MIT
+name: atypical
+repo_org: goodcleanfun
