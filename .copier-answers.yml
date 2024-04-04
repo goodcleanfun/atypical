@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
-_commit: 125577f
+_commit: 71e000e
 _src_path: gh:goodcleanfun/pypi-template
 author: Al Barrentine
 description: Type handling and normalization for non-standard types like email, phone
