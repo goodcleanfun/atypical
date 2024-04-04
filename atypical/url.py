@@ -5,7 +5,7 @@ from urllib.parse import quote as quote_orig
 from urllib.parse import unquote as unquote_orig
 
 import furl
-from foundational.encoding import safe_decode
+from communal.encoding import safe_decode
 from sartorial import JSONSchemaFormatted, Serializable
 
 __all__ = ["URL", "NormalizedURL"]

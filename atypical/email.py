@@ -1,7 +1,7 @@
 from email.utils import parseaddr
 from functools import total_ordering
 
-from foundational.enum import StringEnum
+from communal.enum import StringEnum
 from sartorial import JSONSchemaFormatted, Serializable
 
 

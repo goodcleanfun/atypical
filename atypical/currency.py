@@ -3,7 +3,7 @@ import re
 import babel
 import babel.numbers
 from babel.numbers import LC_NUMERIC
-from foundational.enum import StringEnum
+from communal.enum import StringEnum
 
 
 class CurrencyCode:

@@ -9,7 +9,7 @@ except ImportError:
     BasePhoneNumber = object
     NumberParseException = Exception
 
-from foundational.exceptions import ConfigurationError
+from communal.exceptions import ConfigurationError
 from sartorial import JSONSchemaFormatted, Serializable
 
 
