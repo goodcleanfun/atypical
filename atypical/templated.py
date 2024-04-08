@@ -1,5 +1,5 @@
 import re
-from typing import ClassVar, ForwardRef, Union
+from typing import Any, ClassVar, Dict, ForwardRef, List, Union
 
 from communal.nulls import Omitted
 from jinja2 import Environment, StrictUndefined
@@ -21,8 +21,8 @@ class Templated(str, JSONSchemaFormatted, Serializable):
 
     template: str
     compiled: JinjaTemplate
-    variables: list[str]
-    params: dict
+    variables: List[str]
+    params: Dict[str, Any]
 
     def __new__(cls, template: str, **kwargs):
         return str.__new__(cls, template)
