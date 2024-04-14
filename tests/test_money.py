@@ -52,3 +52,5 @@ def test_money():
     m.money += "0.99"
     assert isinstance(m.money, Money)
     assert m.to_json().replace("\xa0", "") == '{"money":"$101.00"}'
+
+    assert Money("") == 0

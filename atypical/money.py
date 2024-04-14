@@ -32,11 +32,13 @@ class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
     ):
         if isinstance(amount, BaseMoney):
             super().__init__(amount.amount, getattr(amount, "currency", str(currency)))
-        elif isinstance(amount, str):
+        elif isinstance(amount, str) and amount:
             value, given_currency = CurrencyParser.extract(amount)
             if given_currency:
                 currency = given_currency
             super().__init__(value, str(currency))
+        elif not amount:
+            super().__init__(0, str(currency))
         else:
             super().__init__(amount, str(currency))
         if locale is None:
