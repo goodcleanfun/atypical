@@ -45,7 +45,7 @@ classifiers = [
 ]
 dependencies = [
     "communal",
-    "sartorial",
+    "sartorial>=0.9",
     "pydantic>2",
     "Babel",
     "pytz>=2022.1",
