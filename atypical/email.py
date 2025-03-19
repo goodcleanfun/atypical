@@ -14,7 +14,7 @@ class EmailProvider(StringEnum):
 
 @total_ordering
 class Email(str, JSONSchemaFormatted, Serializable):
-    schema_format = "email"
+    __schema_format__ = "email"
 
     TLD_MAP = {
         "con": "com",

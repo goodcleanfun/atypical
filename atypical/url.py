@@ -14,7 +14,7 @@ URL = ForwardRef("URL")
 
 
 class URL(str, furl.furl, JSONSchemaFormatted, Serializable):
-    schema_format = "url"
+    __schema_format__ = "url"
 
     DEFAULT_CHARSET = "utf-8"
     DEFAULT_SCHEME = "https"
@@ -261,7 +261,7 @@ class URL(str, furl.furl, JSONSchemaFormatted, Serializable):
 
 
 class NormalizedURL(URL):
-    schema_format = "normalized-url"
+    __schema_format__ = "normalized-url"
 
     def __init__(self, url: str = "", **kwargs):
         u = URL.normalize(url)

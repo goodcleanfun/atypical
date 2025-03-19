@@ -13,7 +13,7 @@ Money = ForwardRef("Money")
 
 
 class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
-    schema_format = "money"
+    __schema_format__ = "money"
     DEFAULT_LOCALE = None
 
     def __new__(

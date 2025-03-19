@@ -44,7 +44,7 @@ class PhoneNumber(str, BasePhoneNumber, JSONSchemaFormatted, Serializable):
     DEFAULT_REGION = "US"
     DEFAULT_FORMAT = "standard"
 
-    schema_format = "phone"
+    __schema_format__ = "phone"
 
     def __new__(
         cls, raw_number, region: str = DEFAULT_REGION, check_region: bool = True

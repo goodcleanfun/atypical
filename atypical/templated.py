@@ -14,7 +14,7 @@ Templated = ForwardRef("Templated")
 
 
 class Templated(str, JSONSchemaFormatted, Serializable):
-    schema_format = "jinja2"
+    __schema_format__ = "jinja2"
 
     env: ClassVar[Environment] = Environment(undefined=StrictUndefined)
     jinja_check_pattern: ClassVar[re.Pattern] = re.compile(r"\{\{.*?\}\}|\{\%.*?\%\}")
