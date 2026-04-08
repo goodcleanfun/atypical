@@ -46,7 +46,9 @@ class Money(str, BaseMoney, JSONSchemaFormatted, Serializable):
                 self.__class__.DEFAULT_LOCALE = default_locale("LC_NUMERIC")
             locale = self.__class__.DEFAULT_LOCALE
         self.locale = locale
-        self.formatted = format_currency(self.amount, self.currency, locale=self.locale)
+        self.formatted = format_currency(
+            self.amount, self.currency, locale=self.locale
+        ).replace("\xa0", "")
 
     def __str__(self):
         return self.formatted
