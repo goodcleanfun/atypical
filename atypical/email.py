@@ -57,7 +57,11 @@ class Email(str, JSONSchemaFormatted, Serializable):
         name, email_address = parseaddr(email_address)
         self.name = name.strip()
 
-        address, domain = email_address.lower().split("@")
+        domain_split = email_address.lower().split("@")
+        if len(domain_split) != 2:
+            raise ValueError(f"Invalid email {email_address}: no domain")
+
+        address, domain = domain_split
         sub_address = None
 
         if domain in self.COMMON_DOMAIN_TLDS:
