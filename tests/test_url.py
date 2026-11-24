@@ -124,6 +124,9 @@ QUERY_TESTS = {
     "%C3%87=%C3%87": "%C3%87=%C3%87",
     "q=C%CC%A7": "q=%C3%87",
     "q=foo&utm_medium=social&utm_source=foo&utm_campaign=bar&utm_content=blee&utm_term=blah": "q=foo",
+    "param": "param=",
+    "param=": "param=",
+    "param1&param2=val2": "param1=&param2=val2",
 }
 
 
@@ -137,6 +140,7 @@ SORTED_QUERY_TESTS = {
     "": "",
     "foo=bar&bar=baz": "bar=baz&foo=bar",
     "bar=baz&foo=bar": "bar=baz&foo=bar",
+    "foo&bar=baz": "bar=baz&foo=",
 }
 
 
@@ -144,6 +148,15 @@ def test_url_normalize_sorted_query():
     for test, expected in SORTED_QUERY_TESTS.items():
         norm = URL.normalize_query(test, sort_query_params=True)
         assert norm == expected
+
+
+def test_url_normalize_query_param_without_value():
+    u = URL.normalize("https://example.com/path?param")
+    assert u.url == "https://example.com/path?param="
+    assert u == URL.normalize("https://example.com/path?param=")
+
+    u = NormalizedURL("example.com/path?param2=val2&param1")
+    assert u.url == "https://example.com/path?param1=&param2=val2"
 
 
 FRAGMENT_TESTS = {

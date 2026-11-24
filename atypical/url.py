@@ -206,7 +206,7 @@ class URL(str, furl.furl, JSONSchemaFormatted, Serializable):
         for k in cls.SOURCE_QUERY_PARAMS:
             query.params.pop(k, None)
         params = [
-            (cls.quote(cls.unquote(k)), cls.quote(cls.unquote(v)))
+            (cls.quote(cls.unquote(k)), cls.quote(cls.unquote("" if v is None else v)))
             for k, v in query.params.items()
         ]
         if sort_query_params:
